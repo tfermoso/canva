@@ -7,18 +7,20 @@ let speedy = 1;             // velocidad hacia la izquierda
 let radius = 20;           // tamaño de la bola
 let raquetax = 0
 let raquetay = canvas.height - 10;
-let raquetaWidth = 40;
+let raquetaWidth = 70;
+let velocidadRaqueta=8;
+let vidas=10;
 
 document.addEventListener("keydown", moverRaqueta);
 
 function moverRaqueta(e) {
     if (e.key == "ArrowRight") {
         if (raquetax + raquetaWidth < canvas.width)
-            raquetax += 3;
+            raquetax += velocidadRaqueta;
     }
     if (e.key == "ArrowLeft") {
-        if (raquetax - raquetaWidth > 0)
-            raquetax -= 3;
+        if (raquetax  > 0)
+            raquetax -= velocidadRaqueta;
     }
 }
 
@@ -35,17 +37,42 @@ function draw() {
 }
 
 function update() {
+
+    // Movimiento
     x += speedx;
+    y += speedy;
+
+    // Rebote en paredes laterales
     if (x + radius > canvas.width || x - radius < 0) {
         speedx *= -1;
     }
-    y += speedy;
-    if (y + radius > canvas.height || y - radius < 0) {
+
+    // Rebote en el techo
+    if (y - radius < 0) {
         speedy *= -1;
     }
 
+    // ----------- COLISIÓN CON LA RAQUETA -----------
+    if (
+        y + radius >= raquetay &&          // llega a la altura de la raqueta
+        x >= raquetax &&                   // está sobre el borde izquierdo
+        x <= raquetax + raquetaWidth       // está sobre el borde derecho
+    ) {
+        speedy *= -1;                      // rebota hacia arriba
+        y = raquetay - radius;             // evitar que se quede "pegada"
+    }
 
+    // ----------- COLISIÓN CON EL FONDO (perder) -----------
+    if (y + radius > canvas.height) {
+        console.log("Has perdido!");
+        // Reiniciar la bola
+        x = 50;
+        y = 50;
+        speedx = 3;
+        speedy = 1;
+    }
 }
+
 function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
