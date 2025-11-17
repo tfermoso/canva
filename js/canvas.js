@@ -1,15 +1,19 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-let x = 50//canvas.width + 20; // empieza fuera del canvas (a la derecha)
-let y = 50//canvas.height / 2; // centrada verticalmente
-let speedx = 3;
-let speedy = 1;             // velocidad hacia la izquierda
-let radius = 20;           // tamaño de la bola
-let raquetax = 0
+
+let x = 50;
+let y = 50;
+let speedx = 5;
+let speedy = 2;
+let radius = 20;
+
+let raquetax = 0;
 let raquetay = canvas.height - 10;
 let raquetaWidth = 70;
-let velocidadRaqueta = 8;
+let velocidadRaqueta = 15;
+
 let vidas = 10;
+let rebotes = 0;
 
 document.addEventListener("keydown", moverRaqueta);
 
@@ -26,70 +30,88 @@ function moverRaqueta(e) {
 
 function draw() {
     ctx.beginPath();
-    //Pinto la bola
+
+    // Bola
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fillStyle = "red";
     ctx.fill();
-    //Pinto raqueta
+
+    // Raqueta
     ctx.fillStyle = "blue";
     ctx.fillRect(raquetax, raquetay, raquetaWidth, 10);
 
-    //Pinto marcador
+    // Marcador
     ctx.font = "20px Arial";
-    ctx.fillText(`Vidas: ${vidas}`,canvas.width-100,20);
+    ctx.fillStyle = "black";
+    ctx.fillText(`Vidas: ${vidas}`, canvas.width - 120, 20);
+    ctx.fillText(`Rebotes: ${rebotes}`, canvas.width - 120, 50);
+
     ctx.closePath();
 }
 
 function update() {
-
     // Movimiento
     x += speedx;
     y += speedy;
 
-    // Rebote en paredes laterales
+    // Paredes laterales
     if (x + radius > canvas.width || x - radius < 0) {
         speedx *= -1;
     }
 
-    // Rebote en el techo
+    // Techo
     if (y - radius < 0) {
         speedy *= -1;
     }
 
-    // ----------- COLISIÓN CON LA RAQUETA -----------
+    // Colisión con raqueta
     if (
-        y + radius >= raquetay &&          // llega a la altura de la raqueta
-        x >= raquetax &&                   // está sobre el borde izquierdo
-        x <= raquetax + raquetaWidth       // está sobre el borde derecho
+        y + radius >= raquetay &&
+        x >= raquetax &&
+        x <= raquetax + raquetaWidth
     ) {
-        speedy *= -1;                      // rebota hacia arriba
-        y = raquetay - radius;             // evitar que se quede "pegada"
+        speedy *= -1;
+        y = raquetay - radius;
+
+        rebotes++; // <-- SUMA REBOTE
     }
 
-    // ----------- COLISIÓN CON EL FONDO (perder) -----------
+    // Fondo (pierdes vida)
     if (y + radius > canvas.height) {
-        console.log("Has perdido!");
         vidas--;
-        // Reiniciar la bola
+
+        // Reiniciar bola
         x = 50;
         y = 50;
-        speedx = 3;
-        speedy = 1;
+        speedx = 5;
+        speedy = 3;
     }
+}
+
+function gameOver() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = "40px Arial";
+    ctx.fillStyle = "red";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(`Rebotes: ${rebotes}`, canvas.width / 2, canvas.height / 2 + 40);
 }
 
 function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (vidas >= 0) {
-        update();
-        draw();
+    if (vidas <= 0) {
+        gameOver();
+        return; 
     }
+
+    update();
+    draw();
+
     requestAnimationFrame(loop);
 }
 
-
-
 loop();
-
-
