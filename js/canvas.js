@@ -1,6 +1,9 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// -----------------------
+// Variables iniciales
+// -----------------------
 let x = 50;
 let y = 50;
 let speedx = 5;
@@ -8,26 +11,51 @@ let speedy = 2;
 let radius = 20;
 
 let raquetax = 0;
-let raquetay = canvas.height - 10;
+let raquetay;              // se calcula al ajustar el canvas
 let raquetaWidth = 70;
 let velocidadRaqueta = 15;
 
 let vidas = 10;
 let rebotes = 0;
 
+// -----------------------
+// Ajuste de canvas y raqueta
+// -----------------------
+function ajustarCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Colocar raqueta en el fondo de la pantalla
+    raquetay = canvas.height - 20;
+
+    // Mantener la raqueta dentro de los límites
+    if (raquetax + raquetaWidth > canvas.width) {
+        raquetax = canvas.width - raquetaWidth;
+    }
+}
+
+ajustarCanvas();
+window.addEventListener("resize", ajustarCanvas);
+
+// -----------------------
+// Controles de teclado
+// -----------------------
 document.addEventListener("keydown", moverRaqueta);
 
 function moverRaqueta(e) {
-    if (e.key == "ArrowRight") {
+    if (e.key === "ArrowRight") {
         if (raquetax + raquetaWidth < canvas.width)
             raquetax += velocidadRaqueta;
     }
-    if (e.key == "ArrowLeft") {
+    if (e.key === "ArrowLeft") {
         if (raquetax > 0)
             raquetax -= velocidadRaqueta;
     }
 }
 
+// -----------------------
+// Dibujo en pantalla
+// -----------------------
 function draw() {
     ctx.beginPath();
 
@@ -43,14 +71,21 @@ function draw() {
     // Marcador
     ctx.font = "20px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText(`Vidas: ${vidas}`, canvas.width - 120, 20);
-    ctx.fillText(`Rebotes: ${rebotes}`, canvas.width - 120, 50);
+    ctx.textAlign = "right";
+    ctx.textBaseline = "top";
+
+    ctx.fillText(`Vidas: ${vidas}`, canvas.width - 10, 10);
+    ctx.fillText(`Rebotes: ${rebotes}`, canvas.width - 10, 40);
 
     ctx.closePath();
 }
 
+// -----------------------
+// Actualización lógica
+// -----------------------
 function update() {
-    // Movimiento
+
+    // Mover bola
     x += speedx;
     y += speedy;
 
@@ -72,8 +107,7 @@ function update() {
     ) {
         speedy *= -1;
         y = raquetay - radius;
-
-        rebotes++; // <-- SUMA REBOTE
+        rebotes++;
     }
 
     // Fondo (pierdes vida)
@@ -81,31 +115,40 @@ function update() {
         vidas--;
 
         // Reiniciar bola
-        x = 50;
-        y = 50;
+        x = canvas.width / 2;
+        y = canvas.height / 4;
         speedx = 5;
-        speedy = 3;
+        speedy = 2;
     }
 }
 
+// -----------------------
+// GAME OVER
+// -----------------------
 function gameOver() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
     ctx.font = "40px Arial";
     ctx.fillStyle = "red";
-    ctx.textAlign = "center";
     ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
 
     ctx.font = "20px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText(`Rebotes: ${rebotes}`, canvas.width / 2, canvas.height / 2 + 40);
+    ctx.fillText(`Rebotes: ${rebotes}`, canvas.width / 2, canvas.height / 2 + 50);
 }
 
+// -----------------------
+// Loop principal
+// -----------------------
 function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (vidas <= 0) {
         gameOver();
-        return; 
+        return;
     }
 
     update();
