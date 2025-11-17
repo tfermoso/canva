@@ -2,7 +2,7 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 let x = 50//canvas.width + 20; // empieza fuera del canvas (a la derecha)
 let y = 50//canvas.height / 2; // centrada verticalmente
-let speed = 3;             // velocidad hacia la izquierda
+let speedx = 3;             // velocidad hacia la izquierda
 let radius = 20;           // tamaño de la bola
 
 
@@ -15,7 +15,10 @@ function draw() {
 }
 
 function update(){
-    x+=speed;
+    x+=speedx;
+      if (x + radius > canvas.width || x - radius < 0) {
+    speedX *= -1;
+  }
 }
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -26,6 +29,8 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-loop();
+
+
+//loop();
 
 
