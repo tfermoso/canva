@@ -8,11 +8,12 @@ let radius = 20;           // tamaño de la bola
 let raquetax = 0
 let raquetay = canvas.height - 10;
 let raquetaWidth = 40;
+
 document.addEventListener("keydown", moverRaqueta);
 
 function moverRaqueta(e) {
     if(e.key=="ArrowRight"){
-        console.log("derecha");
+        raquetax+=3;
     }
 }
 
