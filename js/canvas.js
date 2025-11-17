@@ -13,3 +13,19 @@ function draw() {
     ctx.fill();
     ctx.closePath();
 }
+
+function update(){
+    x+=speed;
+}
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  update();
+  draw();
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+
+
