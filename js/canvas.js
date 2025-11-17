@@ -17,7 +17,7 @@ function draw() {
 function update(){
     x+=speedx;
       if (x + radius > canvas.width || x - radius < 0) {
-    speedX *= -1;
+    speedx *= -1;
   }
 }
 function loop() {
@@ -31,6 +31,6 @@ function loop() {
 
 
 
-//loop();
+loop();
 
 
