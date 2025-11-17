@@ -12,8 +12,13 @@ let raquetaWidth = 40;
 document.addEventListener("keydown", moverRaqueta);
 
 function moverRaqueta(e) {
-    if(e.key=="ArrowRight"){
-        raquetax+=3;
+    if (e.key == "ArrowRight") {
+        if (raquetax + raquetaWidth < canvas.width)
+            raquetax += 3;
+    }
+    if (e.key == "ArrowLeft") {
+        if (raquetax - raquetaWidth > 0)
+            raquetax -= 3;
     }
 }
 
