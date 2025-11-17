@@ -8,8 +8,8 @@ let radius = 20;           // tamaño de la bola
 let raquetax = 0
 let raquetay = canvas.height - 10;
 let raquetaWidth = 70;
-let velocidadRaqueta=8;
-let vidas=10;
+let velocidadRaqueta = 8;
+let vidas = 10;
 
 document.addEventListener("keydown", moverRaqueta);
 
@@ -19,20 +19,24 @@ function moverRaqueta(e) {
             raquetax += velocidadRaqueta;
     }
     if (e.key == "ArrowLeft") {
-        if (raquetax  > 0)
+        if (raquetax > 0)
             raquetax -= velocidadRaqueta;
     }
 }
 
 function draw() {
     ctx.beginPath();
+    //Pinto la bola
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.fillStyle = "red";
     ctx.fill();
-
+    //Pinto raqueta
     ctx.fillStyle = "blue";
     ctx.fillRect(raquetax, raquetay, raquetaWidth, 10);
 
+    //Pinto marcador
+    ctx.font = "20px Arial";
+    ctx.fillText(`Vidas: ${vidas}`,canvas.width-100,20);
     ctx.closePath();
 }
 
@@ -65,6 +69,7 @@ function update() {
     // ----------- COLISIÓN CON EL FONDO (perder) -----------
     if (y + radius > canvas.height) {
         console.log("Has perdido!");
+        vidas--;
         // Reiniciar la bola
         x = 50;
         y = 50;
@@ -76,9 +81,10 @@ function update() {
 function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    update();
-    draw();
-
+    if (vidas >= 0) {
+        update();
+        draw();
+    }
     requestAnimationFrame(loop);
 }
 
