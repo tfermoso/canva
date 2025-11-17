@@ -1,15 +1,27 @@
 html, body {
     margin: 0;
     padding: 0;
-    border: 0;
-    overflow: hidden;       /* ❗ Evita scroll en móvil */
-    touch-action: none;     /* ❗ Evita scroll táctil accidental */
-    height: 100%;           
+    overflow: hidden;
+    touch-action: none;
+    width: 100%;
+    height: 100%;
 }
 
+/* EL CANVAS SE AJUSTA POR JS SEGÚN PC O MÓVIL */
 canvas {
-    display: block;         /* Quita el espacio debajo del canvas */
-    margin: 0;
-    padding: 0;
+    display: block;
+    margin: 0 auto; /* centra en escritorio */
     border: none;
+    padding: 0;
+}
+/* Móvil → sin borde */
+canvas {
+    border: none;
+}
+
+/* Escritorio → borde visible */
+@media (min-width: 800px) {
+    canvas {
+        border: 3px solid black;
+    }
 }
